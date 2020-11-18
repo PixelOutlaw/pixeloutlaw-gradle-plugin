@@ -5,6 +5,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.14.2"
     id("org.jetbrains.dokka") version "1.4.10"
     id("nebula.release") version "15.3.0"
+    id("com.gradle.plugin-publish") version "0.12.0"
 }
 
 group = "io.pixeloutlaw"
@@ -41,10 +42,14 @@ gradlePlugin {
     plugins {
         create("pixelOutlawMulti") {
             id = "io.pixeloutlaw.multi"
+            displayName = "pixelOutlawMulti"
+            description = "Common conventions for PixelOutlaw Gradle projects (multi module)."
             implementationClass = "io.pixeloutlaw.gradle.PixelOutlawMultiModuleGradlePlugin"
         }
         create("pixelOutlawSingle") {
             id = "io.pixeloutlaw.single"
+            displayName = "pixelOutlawSingle"
+            description = "Common conventions for PixelOutlaw Gradle projects (single module)."
             implementationClass = "io.pixeloutlaw.gradle.PixelOutlawSingleModuleGradlePlugin"
         }
     }
@@ -55,6 +60,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
     withJavadocJar()
     withSourcesJar()
+}
+
+pluginBundle {
+    website = "https://github.com/PixelOutlaw/pixeloutlaw-gradle-plugin"
+    vcsUrl = "https://github.com/PixelOutlaw/pixeloutlaw-gradle-plugin"
+    tags = listOf("kotlin", "pixeloutlaw", "convention")
 }
 
 tasks.getByName("javadocJar", Jar::class) {
