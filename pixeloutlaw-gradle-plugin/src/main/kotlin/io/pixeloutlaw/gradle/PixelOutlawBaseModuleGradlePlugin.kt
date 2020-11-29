@@ -70,7 +70,7 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
             target.configure<SpotlessExtension> {
                 kotlin {
                     target("src/**/*.kt")
-                    ktlint()
+                    ktlint("0.39.0")
                     trimTrailingWhitespace()
                     endWithNewline()
                     if (target.file("HEADER").exists()) {
