@@ -1,6 +1,11 @@
 plugins {
     kotlin("jvm") version "1.4.10" apply false
     id("io.pixeloutlaw.multi")
+    id("io.pixeloutlaw.spigot.build")
+}
+
+spigotBuildTools {
+    versions = listOf("1.16.4")
 }
 
 tasks.withType<Wrapper>().configureEach {

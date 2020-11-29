@@ -52,6 +52,12 @@ gradlePlugin {
             description = "Common conventions for PixelOutlaw Gradle projects (single module)."
             implementationClass = "io.pixeloutlaw.gradle.PixelOutlawSingleModuleGradlePlugin"
         }
+        create("pixelOutlawSpigotBuildTools") {
+            id = "io.pixeloutlaw.spigot.build"
+            displayName = "pixelOutlawSpigotBuildTools"
+            description = "Builds and installs versions of Spigot to Maven Local."
+            implementationClass = "io.pixeloutlaw.gradle.spigot.PixelOutlawSpigotBuildToolsGradlePlugin"
+        }
     }
 }
 
@@ -65,7 +71,7 @@ java {
 pluginBundle {
     website = "https://github.com/PixelOutlaw/pixeloutlaw-gradle-plugin"
     vcsUrl = "https://github.com/PixelOutlaw/pixeloutlaw-gradle-plugin"
-    tags = listOf("kotlin", "pixeloutlaw", "convention")
+    tags = listOf("kotlin", "pixeloutlaw", "convention", "spigot")
 }
 
 tasks.getByName("javadocJar", Jar::class) {
