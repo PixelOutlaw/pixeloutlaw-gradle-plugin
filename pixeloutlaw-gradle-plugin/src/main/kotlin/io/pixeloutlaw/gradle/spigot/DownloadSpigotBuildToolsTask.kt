@@ -24,7 +24,7 @@ open class DownloadSpigotBuildToolsTask : DefaultTask() {
     var downloadedJar: File = project.buildDir.resolve("spigot-build-tools").resolve("BuildTools.jar")
 
     @TaskAction
-    fun downloadSpigotBuildToolsTask() {
+    fun download() {
         ant.withGroovyBuilder {
             "get"("src" to downloadUrl, "dest" to downloadedJar.toPath())
         }
