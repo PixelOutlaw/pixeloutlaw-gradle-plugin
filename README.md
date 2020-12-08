@@ -60,13 +60,18 @@ Spigot in your `mavenLocal()` repository.
 Configure the `spigotBuildTools` extension in your build.gradle(.kts) to pass a list of versions that you
 want to install.
 
+You can also configure the plugin to skip building versions that already have a JAR in your Maven Local. This defaults
+to `true`.
+
 ```kotlin
 spigotBuildTools {
+    skipExistingVersions = true
     versions = listOf("1.16.4")
 }
 ```
 ```groovy
 spigotBuildTools {
+    skipExistingVersions = true
     versions = ["1.16.4"]
 }
 ```

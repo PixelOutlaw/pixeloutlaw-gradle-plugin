@@ -5,6 +5,10 @@ package io.pixeloutlaw.gradle.spigot
  */
 open class PixelOutlawSpigotBuildToolsExtension {
     /**
+     * Should existing versions not be built?
+     */
+    var skipExistingVersions: Boolean = true
+    /**
      * Which versions of Spigot to build and publish into Maven Local.
      */
     var versions: List<String> = emptyList()
