@@ -3,7 +3,6 @@ package io.pixeloutlaw.gradle
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import nebula.plugin.bintray.BintrayPlugin
 import nebula.plugin.responsible.NebulaResponsiblePlugin
 import org.gradle.api.Plugin
@@ -64,9 +63,6 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
             target.pluginManager.apply(DetektPlugin::class.java)
             target.pluginManager.apply(DokkaPlugin::class.java)
 
-            target.configure<DetektExtension> {
-                baseline = target.file("baseline.xml")
-            }
             target.configure<SpotlessExtension> {
                 kotlin {
                     target("src/**/*.kt")
