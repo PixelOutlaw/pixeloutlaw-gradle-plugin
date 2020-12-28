@@ -5,6 +5,7 @@ import com.diffplug.gradle.spotless.SpotlessPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import nebula.plugin.bintray.BintrayPlugin
 import nebula.plugin.responsible.NebulaResponsiblePlugin
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -66,7 +67,7 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
             target.configure<SpotlessExtension> {
                 kotlin {
                     target("src/**/*.kt")
-                    ktlint("0.39.0")
+                    ktlint("0.40.0")
                     trimTrailingWhitespace()
                     endWithNewline()
                     if (target.file("HEADER").exists()) {
@@ -79,7 +80,7 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                 dependsOn("spotlessKotlinApply")
                 kotlinOptions {
                     javaParameters = true
-                    jvmTarget = "1.8"
+                    jvmTarget = "11"
                 }
             }
 
@@ -107,8 +108,8 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
 
             target.tasks.withType<JavaCompile> {
                 dependsOn("spotlessJavaApply")
-                sourceCompatibility = "1.8"
-                targetCompatibility = "1.8"
+                sourceCompatibility = JavaVersion.VERSION_11.toString()
+                targetCompatibility = JavaVersion.VERSION_11.toString()
                 options.compilerArgs.add("-parameters")
                 options.isFork = true
                 options.forkOptions.executable = "javac"
