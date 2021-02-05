@@ -1,11 +1,11 @@
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
-    id("io.gitlab.arturbosch.detekt") version "1.14.2"
-    id("org.jetbrains.dokka") version "1.4.10"
-    id("nebula.release") version "15.3.0"
-    id("com.gradle.plugin-publish") version "0.12.0"
+    id("org.jlleitschuh.gradle.ktlint")
+    id("io.gitlab.arturbosch.detekt")
+    id("org.jetbrains.dokka")
+    id("nebula.release")
+    id("com.gradle.plugin-publish")
 }
 
 group = "io.pixeloutlaw"
