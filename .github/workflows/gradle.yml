@@ -1,11 +1,11 @@
 name: Kotlin CI
-on: [push]
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        gradle: [6.7.1]
+        gradle: [6.7.1, 6.8.1]
         java: [1.8, 1.11]
     steps:
       - uses: actions/checkout@v1
