@@ -80,7 +80,7 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                 dependsOn("spotlessKotlinApply")
                 kotlinOptions {
                     javaParameters = true
-                    jvmTarget = "11"
+                    jvmTarget = "8"
                 }
             }
 
@@ -108,8 +108,8 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
 
             target.tasks.withType<JavaCompile> {
                 dependsOn("spotlessJavaApply")
-                sourceCompatibility = JavaVersion.VERSION_11.toString()
-                targetCompatibility = JavaVersion.VERSION_11.toString()
+                sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+                targetCompatibility = JavaVersion.VERSION_1_8.toString()
                 options.compilerArgs.add("-parameters")
                 options.isFork = true
                 options.forkOptions.executable = "javac"
