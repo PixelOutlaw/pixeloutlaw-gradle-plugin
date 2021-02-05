@@ -75,3 +75,9 @@ jobs:
           github_token: ${{ secrets.ACTIONS_PAT }}
           tag_prefix: ''
           create_annotated_tag: true
+      - name: Write Plugin Publishing Values
+        run: ./gradlew :pixeloutlaw-gradle-plugin:writePublishPluginSecrets
+        env:
+          CI: true
+      - name: Publish Plugins to Gradle Plugin Portal
+        run: ./gradlew :pixeloutlaw-gradle-plugin:publishPlugins -Pversion=${{ steps.gitversion.outputs.semVer }}

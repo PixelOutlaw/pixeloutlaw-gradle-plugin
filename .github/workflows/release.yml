@@ -27,15 +27,3 @@ jobs:
           body: ${{steps.github_release.outputs.changelog}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Make Gradle Wrapper Executable
-        run: chmod +x ./gradlew
-      - name: Write Plugin Publishing Values
-        run: ./gradlew :pixeloutlaw-gradle-plugin:writePublishPluginSecrets
-        env:
-          CI: true
-      - name: Publish Plugins to Gradle Plugin Portal
-        run: ./gradlew :pixeloutlaw-gradle-plugin:publishPlugins -Pversion=${{ github.ref }}
