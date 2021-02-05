@@ -34,10 +34,8 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
       - name: Write Plugin Publishing Values
-        run: ../gradlew writePublishPluginSecrets
+        run: ./gradlew :pixeloutlaw-gradle-plugin:writePublishPluginSecrets
         env:
           CI: true
-        working-directory: pixeloutlaw-gradle-plugin
       - name: Publish Plugins to Gradle Plugin Portal
-        run: ../gradlew publishPlugins
-        working-directory: pixeloutlaw-gradle-plugin
+        run: ./gradlew :pixeloutlaw-gradle-plugin:publishPlugins -P
