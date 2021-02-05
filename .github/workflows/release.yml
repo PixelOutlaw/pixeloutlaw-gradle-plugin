@@ -3,15 +3,17 @@ name: Create Release
 on:
   push:
     tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "*"
 
 jobs:
   release:
-    name: ":rocket: Release"
+    name: "Release"
     runs-on: ubuntu-latest
     steps:
-      - name: ":inbox_tray: Check-out"
+      - name: Check-out Code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: ":pencil2: Build Changelog"
         id: github_release
         uses: mikepenz/release-changelog-builder-action@main
@@ -25,3 +27,17 @@ jobs:
           body: ${{steps.github_release.outputs.changelog}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      - name: Write Plugin Publishing Values
+        run: ../gradlew writePublishPluginSecrets
+        env:
+          CI: true
+        working-directory: pixeloutlaw-gradle-plugin
+      - name: Publish Plugins to Gradle Plugin Portal
+        run: ../gradlew publishPlugins
+        working-directory: pixeloutlaw-gradle-plugin

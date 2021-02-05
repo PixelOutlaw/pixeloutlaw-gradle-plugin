@@ -1,13 +1,14 @@
-name: Kotlin CI
-on: [push, pull_request]
+name: Prepare for Release
+
+on:
+  push:
+    branches:
+      - 'main'
+
 jobs:
-  test:
-    name: "CI"
+  prep:
+    name: 'Prepare for Release'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        gradle: [6.7.1, 6.8.1]
-        java: [1.8, 11, 15]
     steps:
       - name: Check-out Code
         uses: actions/checkout@v2
@@ -57,10 +58,20 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 1.8
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
       - name: Set Gradle Version
-        run: ./gradlew wrapper --gradle-version ${{ matrix.gradle }}
-      - name: Test with Gradle
+        run: ./gradlew wrapper --gradle-version 6.8.2
+      - name: Test Plugin Directly with Gradle
         run: ./gradlew check
+        working-directory: pixeloutlaw-gradle-plugin
+      - name: Test Plugin Application with Gradle
+        run: ./gradlew check
+      - name: Push Tag
+        uses: mathieudutour/github-tag-action@v5.1
+        with:
+          custom_tag: ${{ steps.gitversion.outputs.semVer }}
+          github_token: ${{ secrets.ACTIONS_PAT }}
+          tag_prefix: ''
+          create_annotated_tag: true
