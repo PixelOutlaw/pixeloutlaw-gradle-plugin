@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         gradle: [6.7.1, 6.8.1]
-        java: [1.8, 1.11]
+        java: [1.8, 11, 15]
     steps:
       - name: Check-out Code
         uses: actions/checkout@v2
