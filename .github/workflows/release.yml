@@ -7,17 +7,17 @@ on:
 
 jobs:
   release:
-    name: "🚀 Release"
+    name: ":rocket: Release"
     runs-on: ubuntu-latest
     steps:
-      - name: "📥 Check-out"
+      - name: ":inbox_tray: Check-out"
         uses: actions/checkout@v2
-      - name: "✏ Build Changelog"
+      - name: ":pencil2: Build Changelog"
         id: github_release
         uses: mikepenz/release-changelog-builder-action@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "🚀 Create GitHub release"
+      - name: ":rocket: Create GitHub release"
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
