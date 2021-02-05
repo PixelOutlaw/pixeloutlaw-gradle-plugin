@@ -38,4 +38,4 @@ jobs:
         env:
           CI: true
       - name: Publish Plugins to Gradle Plugin Portal
-        run: ./gradlew :pixeloutlaw-gradle-plugin:publishPlugins -P
+        run: ./gradlew :pixeloutlaw-gradle-plugin:publishPlugins -Pversion=${{ github.ref }}
