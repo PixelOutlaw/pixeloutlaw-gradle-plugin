@@ -23,6 +23,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * Handles any shareable logic between single and multiple module projects.
  */
 open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
+    private companion object {
+        val supportedJavaVersion = JavaVersion.VERSION_1_8
+    }
+
     override fun apply(target: Project) {
         // doesn't do anything
     }
@@ -80,7 +84,7 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                 dependsOn("spotlessKotlinApply")
                 kotlinOptions {
                     javaParameters = true
-                    jvmTarget = "8"
+                    jvmTarget = supportedJavaVersion.toString()
                 }
             }
 
@@ -108,8 +112,8 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
 
             target.tasks.withType<JavaCompile> {
                 dependsOn("spotlessJavaApply")
-                sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-                targetCompatibility = JavaVersion.VERSION_1_8.toString()
+                sourceCompatibility = supportedJavaVersion.toString()
+                targetCompatibility = supportedJavaVersion.toString()
                 options.compilerArgs.add("-parameters")
                 options.isFork = true
                 options.forkOptions.executable = "javac"
