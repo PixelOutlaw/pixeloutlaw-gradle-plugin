@@ -81,34 +81,3 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
     dependsOn("ktlintFormat")
     kotlinOptions.jvmTarget = "1.8"
 }
-
-// This is intended to only run on CI
-tasks.register("writePublishPluginSecrets") {
-    if (System.getenv("CI") != "true") {
-        return@register
-    }
-
-    val gradlePropertiesFile = File(gradle.gradleUserHomeDir, "gradle.properties")
-
-    val props = mutableMapOf<String, String>()
-    props["gradle.publish.key"] = System.getenv("GRADLE_PUBLISH_KEY") ?: "invalid-publish-key"
-    props["gradle.publish.secret"] = System.getenv("GRADLE_PUBLISH_SECRET") ?: "invalid-publish-secret"
-
-    val existingProperties = org.apache.tools.ant.util.LayoutPreservingProperties()
-    existingProperties.isRemoveComments = true
-
-    // load existing file if need be
-    if (gradlePropertiesFile.exists()) {
-        gradlePropertiesFile.inputStream().use {
-            existingProperties.load(it)
-        }
-    }
-
-    // add our new properties
-    existingProperties.putAll(props)
-
-    // write to file
-    gradlePropertiesFile.outputStream().use {
-        existingProperties.store(it, "Storing Gradle Publish Plugin Secrets")
-    }
-}
