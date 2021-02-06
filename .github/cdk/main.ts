@@ -11,8 +11,8 @@ export class MyStack extends Stack {
     super(scope, id);
 
     // define workflows here
-    createGradlePluginPullRequestWorkflow(this);
-    createGradlePluginPrepareForReleaseWorkflow(this);
+    createGradlePluginPullRequestWorkflow(this, "pixeloutlaw-gradle-plugin");
+    createGradlePluginPrepareForReleaseWorkflow(this, "pixeloutlaw-gradle-plugin");
     createGradlePluginReleaseWorkflow(this);
   }
 }
