@@ -80,10 +80,9 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
                 setRequired({
                     gradle.taskGraph.hasTask("publish")
                 })
-                val signingKeyId: String? by project
                 val signingKey: String? by project
                 val signingPassword: String? by project
-                useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+                useInMemoryPgpKeys(signingKey, signingPassword)
             }
         }
     }
