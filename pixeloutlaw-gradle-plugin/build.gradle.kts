@@ -30,6 +30,9 @@ dependencies {
     // maven central staging plugin
     implementation("io.codearte.gradle.nexus:gradle-nexus-staging-plugin:_")
 
+    // nexus publish plugin
+    implementation("de.marcphilipp.gradle:nexus-publish-plugin:_")
+
     // test logger plugin
     implementation("com.adarshr:gradle-test-logger-plugin:_")
 

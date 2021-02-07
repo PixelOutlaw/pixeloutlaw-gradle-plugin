@@ -8,6 +8,8 @@ import com.adarshr.gradle.testlogger.TestLoggerPlugin
 import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
+import de.marcphilipp.gradle.nexus.NexusPublishExtension
+import de.marcphilipp.gradle.nexus.NexusPublishPlugin
 import io.codearte.gradle.nexus.NexusStagingExtension
 import io.codearte.gradle.nexus.NexusStagingPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
@@ -63,26 +65,18 @@ internal val Project.javaToolchainCompiler
  * Configures the project to publish to Maven Central.
  */
 internal fun Project.publishToMavenCentral() {
-    val (mvnName, mvnUrl) = if (version.toString().endsWith("-SNAPSHOT")) {
-        "ossrhSnapshots" to uri("https://oss.sonatype.org/content/repositories/snapshots/")
-    } else {
-        "ossrhReleases" to uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-    }
+    pluginManager.apply(NexusPublishPlugin::class.java)
+    pluginManager.apply(SigningPlugin::class.java)
 
-    configure<PublishingExtension> {
+    configure<NexusPublishExtension> {
         repositories {
-            maven {
-                credentials {
-                    username = System.getenv("OSSRH_USERNAME")
-                    password = System.getenv("OSSRH_PASSWORD")
-                }
-                name = mvnName
-                url = mvnUrl
+
+            sonatype {
+                username.set(System.getenv("OSSRH_USERNAME"))
+                password.set(System.getenv("OSSRH_PASSWORD"))
             }
         }
     }
-
-    pluginManager.apply(SigningPlugin::class.java)
 
     // Signing will only occur if trying to publish the JAR.
     configure<SigningExtension> {
