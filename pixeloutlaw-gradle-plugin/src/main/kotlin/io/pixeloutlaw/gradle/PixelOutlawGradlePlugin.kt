@@ -45,6 +45,7 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
         // Nexus Staging Plugin can only go on the root project
         target.pluginManager.apply(NexusStagingPlugin::class.java)
         target.configure<NexusStagingExtension> {
+            packageGroup = "io.pixeloutlaw"
             username = System.getenv("OSSRH_USERNAME")
             password = System.getenv("OSSRH_PASSWORD")
         }
