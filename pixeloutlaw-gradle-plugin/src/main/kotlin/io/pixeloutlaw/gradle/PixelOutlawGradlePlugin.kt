@@ -1,5 +1,7 @@
 package io.pixeloutlaw.gradle
 
+import com.adarshr.gradle.testlogger.TestLoggerExtension
+import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import io.codearte.gradle.nexus.NexusStagingPlugin
@@ -26,28 +28,43 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 /**
  * Handles any shareable logic between single and multiple module projects.
  */
-open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
+open class PixelOutlawGradlePlugin : Plugin<Project> {
     private companion object {
         val supportedJavaVersion = JavaVersion.VERSION_1_8
     }
 
     override fun apply(target: Project) {
+        // don't do anything if we aren't the root project
+        if (target != target.rootProject) {
+            return
+        }
+
+        // Nexus Staging Plugin can only go on the root project
         target.withMavenPublish {
             target.pluginManager.apply(NexusStagingPlugin::class.java)
         }
+
+        // All of the other plugin configs are conditional, so we can go ahead
+        // and just apply them to allprojects
+        target.allprojects {
+            applyJavaConfiguration()
+            applyKotlinConfiguration()
+            applyMavenPublishConfiguration()
+            applyNebulaMavenPublishConfiguration()
+        }
     }
 
-    internal fun applyMavenPublishConfiguration(target: Project) {
-        target.withMavenPublish {
-            target.pluginManager.apply(SigningPlugin::class.java)
+    private fun Project.applyMavenPublishConfiguration() {
+        withMavenPublish {
+            pluginManager.apply(SigningPlugin::class.java)
 
-            val (mvnName, mvnUrl) = if (target.version.toString().endsWith("-SNAPSHOT")) {
-                "OSSRH" to target.uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            val (mvnName, mvnUrl) = if (version.toString().endsWith("-SNAPSHOT")) {
+                "ossrh-snapshots" to uri("https://oss.sonatype.org/content/repositories/snapshots/")
             } else {
-                "Sonatype Snapshots" to target.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                "ossrh-releases" to uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
             }
 
-            target.configure<PublishingExtension> {
+            configure<PublishingExtension> {
                 repositories {
                     maven {
                         credentials {
@@ -59,9 +76,9 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                     }
                 }
             }
-            target.configure<SigningExtension> {
+            configure<SigningExtension> {
                 setRequired({
-                    target.gradle.taskGraph.hasTask("publish")
+                    gradle.taskGraph.hasTask("publish")
                 })
                 val signingKeyId: String? by project
                 val signingKey: String? by project
@@ -71,15 +88,15 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
         }
     }
 
-    internal fun applyNebulaMavenPublishConfiguration(target: Project) {
-        target.withNebulaMavenPublish {
-            target.extensions.getByType(PublishingExtension::class.java).publications {
+    private fun Project.applyNebulaMavenPublishConfiguration() {
+        withNebulaMavenPublish {
+            extensions.getByType(PublishingExtension::class.java).publications {
                 withType(MavenPublication::class.java) {
-                    target.extensions.getByType<SigningExtension>().sign(this)
+                    extensions.getByType<SigningExtension>().sign(this)
                     pom {
                         withXml {
                             val root = asNode()
-                            val dependencies = target.configurations.getByName("compileOnly").dependencies
+                            val dependencies = configurations.getByName("compileOnly").dependencies
                             if (dependencies.size > 0) {
                                 val deps = root.children().find {
                                     it is groovy.util.Node && it.name().toString()
@@ -101,24 +118,24 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
         }
     }
 
-    internal fun applyKotlinConfiguration(target: Project) {
-        target.withKotlinJvmPlugin {
-            target.pluginManager.apply(DetektPlugin::class.java)
-            target.pluginManager.apply(DokkaPlugin::class.java)
+    private fun Project.applyKotlinConfiguration() {
+        withKotlinJvmPlugin {
+            pluginManager.apply(DetektPlugin::class.java)
+            pluginManager.apply(DokkaPlugin::class.java)
 
-            target.configure<SpotlessExtension> {
+            configure<SpotlessExtension> {
                 kotlin {
                     target("src/**/*.kt")
                     ktlint("0.40.0")
                     trimTrailingWhitespace()
                     endWithNewline()
-                    if (target.file("HEADER").exists()) {
+                    if (file("HEADER").exists()) {
                         licenseHeaderFile("HEADER")
                     }
                 }
             }
 
-            target.tasks.withType<KotlinCompile> {
+            tasks.withType<KotlinCompile> {
                 dependsOn("spotlessKotlinApply")
                 kotlinOptions {
                     javaParameters = true
@@ -126,19 +143,19 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                 }
             }
 
-            target.tasks.getByName("javadocJar", Jar::class) {
+            tasks.getByName("javadocJar", Jar::class) {
                 dependsOn("dokkaJavadoc")
-                from(target.buildDir.resolve("dokka/javadoc"))
+                from(buildDir.resolve("dokka/javadoc"))
             }
         }
     }
 
-    internal fun applyJavaConfiguration(target: Project) {
-        target.withJavaPlugin {
-            target.pluginManager.apply(NebulaResponsiblePlugin::class.java)
-            target.pluginManager.apply(SpotlessPlugin::class.java)
+    private fun Project.applyJavaConfiguration() {
+        withJavaPlugin {
+            pluginManager.apply(NebulaResponsiblePlugin::class.java)
+            pluginManager.apply(SpotlessPlugin::class.java)
 
-            target.configure<SpotlessExtension> {
+            configure<SpotlessExtension> {
                 java {
                     target("src/**/*.java")
                     googleJavaFormat()
@@ -147,7 +164,7 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                 }
             }
 
-            target.tasks.withType<JavaCompile> {
+            tasks.withType<JavaCompile> {
                 dependsOn("spotlessJavaApply")
                 sourceCompatibility = supportedJavaVersion.toString()
                 targetCompatibility = supportedJavaVersion.toString()
@@ -156,10 +173,19 @@ open class PixelOutlawBaseModuleGradlePlugin : Plugin<Project> {
                 options.forkOptions.executable = "javac"
             }
 
-            target.tasks.withType<Test> {
+            tasks.withType<Test> {
                 useJUnitPlatform()
-                testLogging {
-                    events("passed", "skipped", "failed")
+            }
+        }
+        pluginManager.withPlugin("com.adarshr.test-logger") {
+            tasks.withType<Test> {
+                extensions.getByType(TestLoggerExtension::class.java).apply {
+                    theme = ThemeType.MOCHA
+                    showSimpleNames = true
+                    showStandardStreams = true
+                    showFailedStandardStreams = true
+                    showSkippedStandardStreams = false
+                    showPassedStandardStreams = false
                 }
             }
         }

@@ -29,6 +29,9 @@ dependencies {
     // maven central staging plugin
     implementation("io.codearte.gradle.nexus:gradle-nexus-staging-plugin:_")
 
+    // test logger plugin
+    implementation("com.adarshr:gradle-test-logger-plugin:_")
+
     // other standard gradle plugins
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:_")
@@ -40,17 +43,11 @@ detekt {
 
 gradlePlugin {
     plugins {
-        create("pixelOutlawMulti") {
-            id = "io.pixeloutlaw.multi"
-            displayName = "pixelOutlawMulti"
-            description = "Common conventions for PixelOutlaw Gradle projects (multi module)."
-            implementationClass = "io.pixeloutlaw.gradle.PixelOutlawMultiModuleGradlePlugin"
-        }
-        create("pixelOutlawSingle") {
-            id = "io.pixeloutlaw.single"
-            displayName = "pixelOutlawSingle"
-            description = "Common conventions for PixelOutlaw Gradle projects (single module)."
-            implementationClass = "io.pixeloutlaw.gradle.PixelOutlawSingleModuleGradlePlugin"
+        create("pixelOutlawGradle") {
+            id = "io.pixeloutlaw.gradle"
+            displayName = "pixelOutlawGradle"
+            description = "Common conventions for PixelOutlaw Gradle projects."
+            implementationClass = "io.pixeloutlaw.gradle.PixelOutlawGradlePlugin"
         }
         create("pixelOutlawSpigotBuildTools") {
             id = "io.pixeloutlaw.spigot.build"

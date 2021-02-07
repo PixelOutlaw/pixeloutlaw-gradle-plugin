@@ -9,13 +9,10 @@
     "synth": "cdkactions synth",
     "compile": "tsc",
     "watch": "tsc -w",
-    "build": "yarn compile && yarn synth",
-    "upgrade-cdk": "yarn upgrade cdkactions@latest cdkactions-cli@latest"
+    "build": "yarn compile && yarn synth"
   },
   "dependencies": {
-    "@pixeloutlaw/github-cdkactions": "3.0.0",
-    "cdkactions": "0.2.3",
-    "constructs": "3.3.12"
+    "@pixeloutlaw/github-cdkactions": "3.1.0"
   },
   "devDependencies": {
     "@types/node": "14.14.25",
