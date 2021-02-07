@@ -4,6 +4,7 @@ import com.adarshr.gradle.testlogger.TestLoggerExtension
 import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
+import io.codearte.gradle.nexus.NexusStagingExtension
 import io.codearte.gradle.nexus.NexusStagingPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import nebula.plugin.contacts.ContactsExtension
@@ -43,6 +44,10 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
 
         // Nexus Staging Plugin can only go on the root project
         target.pluginManager.apply(NexusStagingPlugin::class.java)
+        target.configure<NexusStagingExtension> {
+            username = System.getenv("OSSRH_USERNAME")
+            password = System.getenv("OSSRH_PASSWORD")
+        }
 
         // All of the other plugin configs are conditional, so we can go ahead
         // and just apply them to allprojects
