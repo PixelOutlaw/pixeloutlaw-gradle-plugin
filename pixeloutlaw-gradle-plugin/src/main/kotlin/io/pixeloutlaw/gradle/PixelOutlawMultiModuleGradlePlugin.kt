@@ -17,6 +17,7 @@ class PixelOutlawMultiModuleGradlePlugin : PixelOutlawBaseModuleGradlePlugin() {
             applyJavaConfiguration(subTarget)
             applyKotlinConfiguration(subTarget)
             applyMavenPublishConfiguration(subTarget)
+            applyNebulaMavenPublishConfiguration(subTarget)
         }
     }
 }

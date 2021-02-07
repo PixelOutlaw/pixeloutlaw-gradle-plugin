@@ -24,8 +24,10 @@ dependencies {
     implementation("org.jetbrains.dokka:dokka-gradle-plugin:_")
 
     // nebula plugins
-    implementation("com.netflix.nebula:nebula-bintray-plugin:_")
     implementation("com.netflix.nebula:nebula-project-plugin:_")
+
+    // maven central staging plugin
+    implementation("io.codearte.gradle.nexus:gradle-nexus-staging-plugin:_")
 
     // other standard gradle plugins
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
