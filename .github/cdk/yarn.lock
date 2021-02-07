@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@pixeloutlaw/github-cdkactions@3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@pixeloutlaw/github-cdkactions/-/github-cdkactions-3.1.0.tgz#e9abf5110286c8f87404844122d8f438ce98a41f"
-  integrity sha512-DtScSdKIhMVq5/725BVdSLrxzBrtxRx6SgfPqycL5LQ+1jHDR4DlgwPEMdNljL7P6KtgrEAVtoHXGYnhleyrfw==
+"@pixeloutlaw/github-cdkactions@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@pixeloutlaw/github-cdkactions/-/github-cdkactions-4.0.1.tgz#bf59783c49faee8294f8fd18bdeaba0eaebea1e8"
+  integrity sha512-oGfCNQlEJpnTj7vs8amlVuqNAIkXhHx92VxBNnY8ghXkfOgQcH+X9+NmoxqDbqktkQi5xcw2lN6347kIxFDyRA==
   dependencies:
     cdkactions "^0.2.3"
     constructs "^3.3.12"
