@@ -6,6 +6,8 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import io.codearte.gradle.nexus.NexusStagingPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
+import nebula.plugin.contacts.ContactsExtension
+import nebula.plugin.contacts.ContactsPlugin
 import nebula.plugin.responsible.NebulaResponsiblePlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -91,6 +93,13 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
                 withType(MavenPublication::class.java) {
                     extensions.getByType<SigningExtension>().sign(this)
                     pom {
+                        licenses {
+                            license {
+                                name.set("MIT License")
+                                url.set("https://opensource.org/licenses/MIT")
+                                distribution.set("repo")
+                            }
+                        }
                         withXml {
                             val root = asNode()
                             val dependencies = configurations.getByName("compileOnly").dependencies
@@ -149,8 +158,13 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
 
     private fun Project.applyJavaConfiguration() {
         withJavaPlugin {
+            pluginManager.apply(ContactsPlugin::class.java)
             pluginManager.apply(NebulaResponsiblePlugin::class.java)
             pluginManager.apply(SpotlessPlugin::class.java)
+
+            configure<ContactsExtension> {
+                addPerson("topplethenunnery@gmail.com")
+            }
 
             configure<SpotlessExtension> {
                 java {
