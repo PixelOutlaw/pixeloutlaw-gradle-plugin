@@ -1,10 +1,7 @@
 package io.pixeloutlaw.gradle
 
-import io.codearte.gradle.nexus.NexusStagingExtension
-import io.codearte.gradle.nexus.NexusStagingPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 
 /**
  * Handles any shareable logic between single and multiple module projects.
@@ -16,23 +13,34 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
             return
         }
 
-        // Nexus Staging Plugin can only go on the root project
-        target.pluginManager.apply(NexusStagingPlugin::class.java)
-        target.configure<NexusStagingExtension> {
-            packageGroup = "io.pixeloutlaw"
-            username = System.getenv("OSSRH_USERNAME")
-            password = System.getenv("OSSRH_PASSWORD")
-        }
+        // this can only be ran on the root project
+        target.applyRootConfiguration()
 
         // All of the other plugin configs are conditional, so we can go ahead
         // and just apply them to allprojects
         target.allprojects {
+            // things that should go on every single project
             applyBaseConfiguration()
-            applyTestLoggerPlugin()
-            applyJavaConfiguration()
-            applyKotlinConfiguration()
-            applyMavenPublishConfiguration()
-            applyNebulaMavenPublishConfiguration()
+
+            // if the project is using Java, apply Java configuration
+            pluginManager.withPlugin("java") {
+                applyJavaConfiguration()
+            }
+
+            // if the project is using Kotlin, apply Kotlin configuration
+            pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+                applyKotlinConfiguration()
+            }
+
+            // setup maven central publication
+            pluginManager.withPlugin("maven-publish") {
+                publishToMavenCentral()
+            }
+
+            // make sure all publications are ready for maven central
+            pluginManager.withPlugin("nebula.maven-publish") {
+                configurePublicationsForMavenCentral()
+            }
         }
     }
 }

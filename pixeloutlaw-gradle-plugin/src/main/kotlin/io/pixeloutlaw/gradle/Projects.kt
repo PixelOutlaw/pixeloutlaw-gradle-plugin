@@ -8,13 +8,14 @@ import com.adarshr.gradle.testlogger.TestLoggerPlugin
 import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
+import io.codearte.gradle.nexus.NexusStagingExtension
+import io.codearte.gradle.nexus.NexusStagingPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import nebula.plugin.contacts.ContactsExtension
 import nebula.plugin.contacts.ContactsPlugin
 import nebula.plugin.responsible.NebulaResponsiblePlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -59,29 +60,6 @@ internal val Project.javaToolchainCompiler
     }
 
 /**
- * Runs an [action] after the Java Gradle plugin has been applied.
- */
-internal fun Project.withJavaPlugin(action: AppliedPlugin.() -> Unit) = pluginManager.withPlugin("java", action)
-
-/**
- * Runs an [action] after the Kotlin Gradle plugin has been applied.
- */
-internal fun Project.withKotlinJvmPlugin(action: AppliedPlugin.() -> Unit) =
-    pluginManager.withPlugin("org.jetbrains.kotlin.jvm", action)
-
-/**
- * Runs an [action] after the Maven Publish Gradle plugin has been applied.
- */
-internal fun Project.withMavenPublish(action: AppliedPlugin.() -> Unit) =
-    pluginManager.withPlugin("maven-publish", action)
-
-/**
- * Runs an [action] after the Nebula Maven Publish Gradle plugin has been applied.
- */
-internal fun Project.withNebulaMavenPublish(action: AppliedPlugin.() -> Unit) =
-    pluginManager.withPlugin("nebula.maven-publish", action)
-
-/**
  * Configures the project to publish to Maven Central.
  */
 internal fun Project.publishToMavenCentral() {
@@ -119,15 +97,6 @@ internal fun Project.publishToMavenCentral() {
 }
 
 /**
- * Configures anything specifically related to publishing to Maven.
- */
-internal fun Project.applyMavenPublishConfiguration() {
-    withMavenPublish {
-        publishToMavenCentral()
-    }
-}
-
-/**
  * Configures all Maven publications to be signed and have POM contents meet Maven Central requirements.
  */
 internal fun Project.configurePublicationsForMavenCentral() {
@@ -146,20 +115,84 @@ internal fun Project.configurePublicationsForMavenCentral() {
 }
 
 /**
- * Configures anything specifically related to modifying Maven publications.
+ * Configures anything specifically related to Kotlin.
  */
-internal fun Project.applyNebulaMavenPublishConfiguration() {
-    withNebulaMavenPublish {
-        configurePublicationsForMavenCentral()
+internal fun Project.applyKotlinConfiguration() {
+    pluginManager.apply(DetektPlugin::class.java)
+    pluginManager.apply(DokkaPlugin::class.java)
+
+    configure<SpotlessExtension> {
+        kotlin {
+            target("src/**/*.kt")
+            ktlint("0.40.0")
+            trimTrailingWhitespace()
+            endWithNewline()
+            if (file("HEADER").exists()) {
+                licenseHeaderFile("HEADER")
+            }
+        }
+    }
+
+    tasks.withType<KotlinCompile> {
+        dependsOn("spotlessKotlinApply")
+        kotlinOptions {
+            jdkHome = javaToolchainCompiler.get().metadata.installationPath.asFile.absolutePath
+            javaParameters = true
+            jvmTarget = supportedJavaVersion.toString()
+            useIR = true
+        }
+    }
+
+    tasks.getByName("javadocJar", Jar::class) {
+        dependsOn("dokkaJavadoc")
+        from(buildDir.resolve("dokka/javadoc"))
     }
 }
 
 /**
- * Adds the Test Logger plugin so that test logs are prettier.
+ * Configures anything specifically related to Java.
  */
-internal fun Project.applyTestLoggerPlugin() {
+internal fun Project.applyJavaConfiguration() {
+    pluginManager.apply(SpotlessPlugin::class.java)
+    configure<SpotlessExtension> {
+        java {
+            target("src/**/*.java")
+            googleJavaFormat()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion.set(supportedJavaLanguageVersion)
+        }
+    }
+
+    tasks.withType<JavaCompile> {
+        dependsOn("spotlessJavaApply")
+        options.compilerArgs.add("-parameters")
+        options.isFork = true
+        options.forkOptions.executable = "javac"
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+}
+
+/**
+ * Configures anything that should always go on a project.
+ */
+internal fun Project.applyBaseConfiguration() {
+    pluginManager.apply(ContactsPlugin::class.java)
+    pluginManager.apply(NebulaResponsiblePlugin::class.java)
     pluginManager.apply(TestLoggerPlugin::class.java)
-    extensions.getByType(TestLoggerExtension::class.java).apply {
+
+    configure<ContactsExtension> {
+        addPerson("topplethenunnery@gmail.com")
+    }
+    configure<TestLoggerExtension> {
         theme = ThemeType.MOCHA
         showSimpleNames = true
         showStandardStreams = true
@@ -170,84 +203,19 @@ internal fun Project.applyTestLoggerPlugin() {
 }
 
 /**
- * Configures anything specifically related to Kotlin.
+ * Configures anything that should only go on the root project.
  */
-internal fun Project.applyKotlinConfiguration() {
-    withKotlinJvmPlugin {
-        pluginManager.apply(DetektPlugin::class.java)
-        pluginManager.apply(DokkaPlugin::class.java)
-
-        configure<SpotlessExtension> {
-            kotlin {
-                target("src/**/*.kt")
-                ktlint("0.40.0")
-                trimTrailingWhitespace()
-                endWithNewline()
-                if (file("HEADER").exists()) {
-                    licenseHeaderFile("HEADER")
-                }
-            }
-        }
-
-        tasks.withType<KotlinCompile> {
-            dependsOn("spotlessKotlinApply")
-            kotlinOptions {
-                jdkHome = javaToolchainCompiler.get().metadata.installationPath.asFile.absolutePath
-                javaParameters = true
-                jvmTarget = supportedJavaVersion.toString()
-                useIR = true
-            }
-        }
-
-        tasks.getByName("javadocJar", Jar::class) {
-            dependsOn("dokkaJavadoc")
-            from(buildDir.resolve("dokka/javadoc"))
-        }
+internal fun Project.applyRootConfiguration() {
+    // don't do anything if we aren't the root project
+    if (this != rootProject) {
+        return
     }
-}
 
-/**
- * Configures anything specifically related to Java.
- */
-internal fun Project.applyJavaConfiguration() {
-    withJavaPlugin {
-        pluginManager.apply(SpotlessPlugin::class.java)
-        configure<SpotlessExtension> {
-            java {
-                target("src/**/*.java")
-                googleJavaFormat()
-                trimTrailingWhitespace()
-                endWithNewline()
-            }
-        }
-
-        configure<JavaPluginExtension> {
-            toolchain {
-                languageVersion.set(supportedJavaLanguageVersion)
-            }
-        }
-
-        tasks.withType<JavaCompile> {
-            dependsOn("spotlessJavaApply")
-            options.compilerArgs.add("-parameters")
-            options.isFork = true
-            options.forkOptions.executable = "javac"
-        }
-
-        tasks.withType<Test> {
-            useJUnitPlatform()
-        }
-    }
-}
-
-/**
- * Configures anything that should always go on a project.
- */
-internal fun Project.applyBaseConfiguration() {
-    pluginManager.apply(ContactsPlugin::class.java)
-    pluginManager.apply(NebulaResponsiblePlugin::class.java)
-
-    configure<ContactsExtension> {
-        addPerson("topplethenunnery@gmail.com")
+    // Nexus Staging Plugin can only go on the root project
+    pluginManager.apply(NexusStagingPlugin::class.java)
+    configure<NexusStagingExtension> {
+        packageGroup = "io.pixeloutlaw"
+        username = System.getenv("OSSRH_USERNAME")
+        password = System.getenv("OSSRH_PASSWORD")
     }
 }
