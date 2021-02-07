@@ -25,6 +25,7 @@ dependencies {
 
     // nebula plugins
     implementation("com.netflix.nebula:nebula-project-plugin:_")
+    implementation("com.netflix.nebula:gradle-contacts-plugin:_")
 
     // maven central staging plugin
     implementation("io.codearte.gradle.nexus:gradle-nexus-staging-plugin:_")
