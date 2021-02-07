@@ -82,9 +82,9 @@ internal fun Project.withNebulaMavenPublish(action: AppliedPlugin.() -> Unit) =
     pluginManager.withPlugin("nebula.maven-publish", action)
 
 /**
- * Configures the Maven Publish Gradle plugin to publish to Maven Central.
+ * Configures the project to publish to Maven Central.
  */
-internal fun Project.configurePublishingToMavenCentral() {
+internal fun Project.publishToMavenCentral() {
     val (mvnName, mvnUrl) = if (version.toString().endsWith("-SNAPSHOT")) {
         "ossrhSnapshots" to uri("https://oss.sonatype.org/content/repositories/snapshots/")
     } else {
@@ -103,12 +103,7 @@ internal fun Project.configurePublishingToMavenCentral() {
             }
         }
     }
-}
 
-/**
- * Sets up binary signing for publication to Maven Central.
- */
-internal fun Project.configureMavenPublicationSigning() {
     pluginManager.apply(SigningPlugin::class.java)
 
     // Signing will only occur if trying to publish the JAR.
@@ -121,14 +116,6 @@ internal fun Project.configureMavenPublicationSigning() {
         // Uses ASCII-armored keys (typically provided on GitHub Actions)
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
-}
-
-/**
- * Configures the project to publish to Maven Central.
- */
-internal fun Project.publishToMavenCentral() {
-    configurePublishingToMavenCentral()
-    configureMavenPublicationSigning()
 }
 
 /**
