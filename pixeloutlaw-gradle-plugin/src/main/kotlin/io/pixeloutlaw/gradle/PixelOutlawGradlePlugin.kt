@@ -1,6 +1,7 @@
 package io.pixeloutlaw.gradle
 
 import com.adarshr.gradle.testlogger.TestLoggerExtension
+import com.adarshr.gradle.testlogger.TestLoggerPlugin
 import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
@@ -167,6 +168,7 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
             pluginManager.apply(ContactsPlugin::class.java)
             pluginManager.apply(NebulaResponsiblePlugin::class.java)
             pluginManager.apply(SpotlessPlugin::class.java)
+            pluginManager.apply(TestLoggerPlugin::class.java)
 
             configure<ContactsExtension> {
                 addPerson("topplethenunnery@gmail.com")
