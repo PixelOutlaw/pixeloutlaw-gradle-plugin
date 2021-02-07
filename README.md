@@ -2,36 +2,19 @@
 
 > Provides standard defaults for PixelOutlaw Gradle-based projects and other useful plugins.
 
-## Single Module Projects
+## Prerequisites
+
+This plugin only works with versions of Gradle >= 6.8.2.
+
+## Gradle Projects
 
 ```kotlin
 plugins {
-    id("io.pixeloutlaw.single") version "x.y.z"
+    id("io.pixeloutlaw.gradle") version "x.y.z"
 }
 ```
 
 ### What It Does
-
-* Adds publishing to Maven Central
-* Adds generation of source and javadoc jars
-* Sets Java compilation to target JDK 8
-* Sets up Google Java Format for Java source files
-* Sets Kotlin compilation to target JDK 8
-* Adds Dokka generation for Kotlin files and adds it to javadoc jar
-* Adds Detekt for Kotlin files
-* Adds compileOnly dependencies to Maven pom as `provided` scope
-
-## Multiple Module Projects
-
-```kotlin
-plugins {
-    id("io.pixeloutlaw.multi") version "x.y.z"
-}
-```
-
-### What It Does
-
-Sets up submodules to:
 
 * Adds publishing to Maven Central
 * Adds generation of source and javadoc jars

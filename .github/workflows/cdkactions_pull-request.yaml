@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         gradle:
-          - 6.7.1
           - 6.8.2
         java:
           - "1.8"

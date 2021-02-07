@@ -3,7 +3,8 @@ import { App, Stack } from "cdkactions";
 import {
   createGradlePluginPullRequestWorkflow,
   createGradlePluginPrepareForReleaseWorkflow,
-  createGradlePluginReleaseWorkflow
+  createGradlePluginReleaseWorkflow,
+  GradlePluginConfig
 } from "@pixeloutlaw/github-cdkactions";
 
 export class MyStack extends Stack {
@@ -11,8 +12,9 @@ export class MyStack extends Stack {
     super(scope, id);
 
     // define workflows here
-    createGradlePluginPullRequestWorkflow(this, "pixeloutlaw-gradle-plugin");
-    createGradlePluginPrepareForReleaseWorkflow(this, "pixeloutlaw-gradle-plugin");
+    const pluginConfig: GradlePluginConfig = {pluginName: "pixeloutlaw-gradle-plugin"};
+    createGradlePluginPullRequestWorkflow(this, pluginConfig);
+    createGradlePluginPrepareForReleaseWorkflow(this, pluginConfig);
     createGradlePluginReleaseWorkflow(this);
   }
 }
