@@ -109,7 +109,7 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
                         }
                         withXml {
                             val root = asNode()
-                            val dependencies = configurations.getByName("compileOnly").dependencies
+                            val dependencies = configurations.findByName("compileOnly")?.dependencies ?: return@withXml
                             if (dependencies.size > 0) {
                                 val deps = root.children().find {
                                     it is groovy.util.Node && it.name().toString()
