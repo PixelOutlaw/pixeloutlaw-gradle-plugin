@@ -12,7 +12,7 @@ plugins {
 
 ### What It Does
 
-* Adds publishing to Bintray
+* Adds publishing to Maven Central
 * Adds generation of source and javadoc jars
 * Sets Java compilation to target JDK 8
 * Sets up Google Java Format for Java source files
@@ -33,7 +33,7 @@ plugins {
 
 Sets up submodules to:
 
-* Adds publishing to Bintray
+* Adds publishing to Maven Central
 * Adds generation of source and javadoc jars
 * Sets Java compilation to target JDK 8
 * Sets up Google Java Format for Java source files

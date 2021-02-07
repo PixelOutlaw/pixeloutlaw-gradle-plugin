@@ -9,3 +9,6 @@ fun Project.withKotlinJvmPlugin(action: AppliedPlugin.() -> Unit) =
     pluginManager.withPlugin("org.jetbrains.kotlin.jvm", action)
 
 fun Project.withMavenPublish(action: AppliedPlugin.() -> Unit) = pluginManager.withPlugin("maven-publish", action)
+
+fun Project.withNebulaMavenPublish(action: AppliedPlugin.() -> Unit) =
+    pluginManager.withPlugin("nebula.maven-publish", action)
