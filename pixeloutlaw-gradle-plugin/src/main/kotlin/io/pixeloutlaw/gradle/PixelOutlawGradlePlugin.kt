@@ -40,9 +40,7 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
         }
 
         // Nexus Staging Plugin can only go on the root project
-        target.withMavenPublish {
-            target.pluginManager.apply(NexusStagingPlugin::class.java)
-        }
+        target.pluginManager.apply(NexusStagingPlugin::class.java)
 
         // All of the other plugin configs are conditional, so we can go ahead
         // and just apply them to allprojects
@@ -59,9 +57,9 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
             pluginManager.apply(SigningPlugin::class.java)
 
             val (mvnName, mvnUrl) = if (version.toString().endsWith("-SNAPSHOT")) {
-                "ossrh-snapshots" to uri("https://oss.sonatype.org/content/repositories/snapshots/")
+                "ossrhSnapshots" to uri("https://oss.sonatype.org/content/repositories/snapshots/")
             } else {
-                "ossrh-releases" to uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                "ossrhReleases" to uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
             }
 
             configure<PublishingExtension> {
