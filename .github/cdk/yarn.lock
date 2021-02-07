@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@pixeloutlaw/github-cdkactions@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@pixeloutlaw/github-cdkactions/-/github-cdkactions-3.0.0.tgz#b736f8a1bb47f1c9d0b0b46db46bcc5884929a24"
-  integrity sha512-lROvDUK2ffRn3aonT2hR8Ksvk3KaI7GzjLo4iH+QTNkswKgKhqSH+9cn9cd6S702+31qkjJxWNfOnsa78AQ9/A==
+"@pixeloutlaw/github-cdkactions@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@pixeloutlaw/github-cdkactions/-/github-cdkactions-3.1.0.tgz#e9abf5110286c8f87404844122d8f438ce98a41f"
+  integrity sha512-DtScSdKIhMVq5/725BVdSLrxzBrtxRx6SgfPqycL5LQ+1jHDR4DlgwPEMdNljL7P6KtgrEAVtoHXGYnhleyrfw==
   dependencies:
     cdkactions "^0.2.3"
     constructs "^3.3.12"
@@ -45,7 +45,7 @@ cdkactions-cli@0.2.3:
     yaml "^1.10.0"
     yargs "^16.2.0"
 
-cdkactions@0.2.3, cdkactions@^0.2.3:
+cdkactions@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/cdkactions/-/cdkactions-0.2.3.tgz#aa27bf720962376d54f8ef95cdfb0ab46458b966"
   integrity sha512-/DYQ2qsT6fzgZB+cmQjtPqR4aAWCqAytWbFpJK+iJLQ4jQrl6l4uMf01TLiWY3mAILS0YGlwPcoBbGvq9Jnz5g==
@@ -74,7 +74,7 @@ color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-constructs@3.3.12, constructs@^3.2.109, constructs@^3.3.12:
+constructs@^3.2.109, constructs@^3.3.12:
   version "3.3.12"
   resolved "https://registry.yarnpkg.com/constructs/-/constructs-3.3.12.tgz#9bbc8f121c9686195b4871749d91dfacba71acdb"
   integrity sha512-K2Q1qYDYYGCCFBbWLNU5ja/mrHh2tB4SpSXU/XBfNxVl20OZTXUwzlFaCfSlBL12+dNbXC6f4eTpHZ2t5o7gDg==

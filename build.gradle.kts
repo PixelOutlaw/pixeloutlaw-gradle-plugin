@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.4.21" apply false
-    id("io.pixeloutlaw.multi")
+    id("io.pixeloutlaw.gradle")
     id("io.pixeloutlaw.spigot.build")
 }
 
