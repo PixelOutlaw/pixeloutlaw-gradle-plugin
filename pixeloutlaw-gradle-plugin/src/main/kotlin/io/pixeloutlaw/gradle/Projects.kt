@@ -33,6 +33,8 @@ import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.SigningPlugin
+import org.gradle.testing.jacoco.plugins.JacocoPlugin
+import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -147,6 +149,7 @@ internal fun Project.applyKotlinConfiguration() {
  * Configures anything specifically related to Java.
  */
 internal fun Project.applyJavaConfiguration() {
+    pluginManager.apply(JacocoPlugin::class.java)
     pluginManager.apply(SpotlessPlugin::class.java)
     configure<SpotlessExtension> {
         java {
@@ -170,7 +173,14 @@ internal fun Project.applyJavaConfiguration() {
         options.forkOptions.executable = "javac"
     }
 
+    tasks.withType<JacocoReport> {
+        reports {
+            xml.isEnabled = true
+        }
+    }
+
     tasks.withType<Test> {
+        finalizedBy("jacocoTestReport")
         useJUnitPlatform()
     }
 }
