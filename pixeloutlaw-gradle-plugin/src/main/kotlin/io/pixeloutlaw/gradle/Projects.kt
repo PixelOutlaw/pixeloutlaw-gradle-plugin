@@ -72,7 +72,6 @@ internal fun Project.publishToMavenCentral() {
 
     configure<NexusPublishExtension> {
         repositories {
-
             sonatype {
                 username.set(System.getenv("OSSRH_USERNAME"))
                 password.set(System.getenv("OSSRH_PASSWORD"))
@@ -213,6 +212,11 @@ internal fun Project.applyRootConfiguration() {
     // don't do anything if we aren't the root project
     if (this != rootProject) {
         return
+    }
+
+    allprojects {
+        description = rootProject.description
+        version = rootProject.version
     }
 
     // Nexus Staging Plugin can only go on the root project
