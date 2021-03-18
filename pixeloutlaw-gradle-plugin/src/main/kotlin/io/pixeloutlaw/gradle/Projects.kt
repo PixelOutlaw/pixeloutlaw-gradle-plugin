@@ -24,8 +24,6 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.getByType
@@ -42,26 +40,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * Declare the minimum version of Java supported.
  */
 internal val supportedJavaVersion = JavaVersion.VERSION_1_8
-
-/**
- * Declare the minimum language version of Java supported (for use with toolchains).
- */
-internal val supportedJavaLanguageVersion = JavaLanguageVersion.of(supportedJavaVersion.majorVersion)
-
-/**
- * Fetches the [JavaToolchainService] extension from the project.
- */
-internal val Project.javaToolchains get() = extensions.getByName<JavaToolchainService>("javaToolchains")
-
-/**
- * Fetches a compiler instance from the [JavaToolchainService].
- */
-internal val Project.javaToolchainCompiler
-    get() = javaToolchains.compilerFor {
-        languageVersion.set(
-            supportedJavaLanguageVersion
-        )
-    }
 
 /**
  * Configures the project to publish to Maven Central.
@@ -119,7 +97,7 @@ internal fun Project.applyKotlinConfiguration() {
     configure<SpotlessExtension> {
         kotlin {
             target("src/**/*.kt")
-            ktlint("0.40.0")
+            ktlint("0.41.0")
             trimTrailingWhitespace()
             endWithNewline()
             if (file("HEADER").exists()) {
@@ -131,7 +109,6 @@ internal fun Project.applyKotlinConfiguration() {
     tasks.withType<KotlinCompile> {
         dependsOn("spotlessKotlinApply")
         kotlinOptions {
-            jdkHome = javaToolchainCompiler.get().metadata.installationPath.asFile.absolutePath
             javaParameters = true
             jvmTarget = supportedJavaVersion.toString()
             useIR = true
@@ -160,9 +137,8 @@ internal fun Project.applyJavaConfiguration() {
     }
 
     configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion.set(supportedJavaLanguageVersion)
-        }
+        sourceCompatibility = supportedJavaVersion
+        targetCompatibility = supportedJavaVersion
     }
 
     tasks.withType<JavaCompile> {
