@@ -9,7 +9,7 @@ spigotBuildTools {
 }
 
 tasks.withType<Wrapper>().configureEach {
-    version = "6.8.2"
+    version = "7.0.2"
     doLast {
         copy {
             from(propertiesFile)
