@@ -1,12 +1,6 @@
-import de.fayard.refreshVersions.bootstrapRefreshVersions
-
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies.classpath("de.fayard.refreshVersions:refreshVersions:0.9.7")
+plugins {
+    // See https://jmfayard.github.io/refreshVersions
+    id("de.fayard.refreshVersions") version "0.10.0"
 }
 
 rootProject.name = "pixeloutlaw-gradle-plugin"
-
-bootstrapRefreshVersions()
