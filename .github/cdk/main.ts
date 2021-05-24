@@ -5,7 +5,7 @@ import {
   createGradlePluginPrepareForReleaseWorkflow,
   createGradlePluginReleaseWorkflow,
   GradlePluginConfig
-} from "@pixeloutlaw/github-cdkactions";
+} from "@mythicdrops/github-cdkactions";
 
 export class MyStack extends Stack {
   constructor(scope: Construct, id: string) {

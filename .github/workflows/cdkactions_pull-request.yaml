@@ -17,7 +17,7 @@ jobs:
         gradle:
           - 7.0.2
         java:
-          - "1.8"
+          - "8"
           - "11"
           - "15"
     steps:
@@ -26,13 +26,14 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: adopt
           java-version: ${{ matrix.java }}
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
       - name: Set Gradle Version
-        run: ./gradlew wrapper --gradle-version \${{ matrix.gradle }}
+        run: ./gradlew wrapper --gradle-version ${{ matrix.gradle }}
       - name: Test Plugin Directly with Gradle
         run: ../gradlew check
         working-directory: pixeloutlaw-gradle-plugin
