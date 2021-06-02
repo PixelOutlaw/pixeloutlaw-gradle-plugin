@@ -34,18 +34,18 @@ open class RunSpigotBuildToolsTask @Inject constructor(
                 return@forEach
             }
             val versionDir = buildToolsJar.parentFile.resolve(it)
-            fileSystemOperations.copy {
-                from(buildToolsJar)
-                into(versionDir)
+            fileSystemOperations.copy { copy ->
+                copy.from(buildToolsJar)
+                copy.into(versionDir)
             }
-            execOperations.javaexec {
-                args = listOf(
+            execOperations.javaexec { javaexec ->
+                javaexec.args = listOf(
                     buildToolsJar.absolutePath,
                     "--rev",
                     it
                 )
-                main = "-jar"
-                workingDir = versionDir.absoluteFile
+                javaexec.main = "-jar"
+                javaexec.workingDir = versionDir.absoluteFile
             }
         }
     }

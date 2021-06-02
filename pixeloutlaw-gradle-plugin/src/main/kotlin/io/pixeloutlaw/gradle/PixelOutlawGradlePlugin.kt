@@ -18,28 +18,28 @@ open class PixelOutlawGradlePlugin : Plugin<Project> {
 
         // All of the other plugin configs are conditional, so we can go ahead
         // and just apply them to allprojects
-        target.allprojects {
+        target.allprojects { project ->
             // things that should go on every single project
-            applyBaseConfiguration()
+            project.applyBaseConfiguration()
 
             // if the project is using Java, apply Java configuration
-            pluginManager.withPlugin("java") {
-                applyJavaConfiguration()
+            project.pluginManager.withPlugin("java") {
+                project.applyJavaConfiguration()
             }
 
             // if the project is using Kotlin, apply Kotlin configuration
-            pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-                applyKotlinConfiguration()
+            project.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+                project.applyKotlinConfiguration()
             }
 
             // setup maven central publication
-            pluginManager.withPlugin("maven-publish") {
-                publishToMavenCentral()
+            project.pluginManager.withPlugin("maven-publish") {
+                project.publishToMavenCentral()
             }
 
             // make sure all publications are ready for maven central
-            pluginManager.withPlugin("nebula.maven-publish") {
-                configurePublicationsForMavenCentral()
+            project.pluginManager.withPlugin("nebula.maven-publish") {
+                project.configurePublicationsForMavenCentral()
             }
         }
     }

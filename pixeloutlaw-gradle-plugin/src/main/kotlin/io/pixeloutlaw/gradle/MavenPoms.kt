@@ -8,10 +8,10 @@ import org.gradle.api.publish.maven.MavenPom
  */
 internal fun MavenPom.mitLicense() {
     licenses {
-        license {
+        it.license { license ->
             name.set("MIT License")
             url.set("https://opensource.org/licenses/MIT")
-            distribution.set("repo")
+            license.distribution.set("repo")
         }
     }
 }
@@ -20,8 +20,8 @@ internal fun MavenPom.mitLicense() {
  * Adds any `compileOnly` Gradle dependencies to a generated POM as `provided` Maven dependency.
  */
 internal fun MavenPom.addCompileOnlyDependenciesAsProvided(project: Project) {
-    withXml {
-        val root = asNode()
+    withXml { xml ->
+        val root = xml.asNode()
         // we only add compileOnly dependencies if the configuration even exists
         val dependencies = project.configurations.findByName("compileOnly")?.dependencies ?: return@withXml
         if (dependencies.size > 0) {

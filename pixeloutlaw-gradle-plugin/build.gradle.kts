@@ -1,6 +1,7 @@
 plugins {
-    `kotlin-dsl`
+    `java-gradle-plugin`
     `maven-publish`
+    kotlin("jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
@@ -15,6 +16,10 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
+    implementation(gradleKotlinDsl())
+
     // kotlin plugins
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
     implementation("org.jetbrains.kotlin:kotlin-reflect:_")
@@ -85,6 +90,5 @@ tasks.getByName("javadocJar", Jar::class) {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
-    dependsOn("ktlintFormat")
     kotlinOptions.jvmTarget = "1.8"
 }

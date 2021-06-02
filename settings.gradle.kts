@@ -1,13 +1,15 @@
+pluginManagement {
+    includeBuild("pixeloutlaw-gradle-plugin")
+}
+
 rootProject.name = "pixeloutlaw-gradle"
-
-include("sample-kotlin")
-
-includeBuild("pixeloutlaw-gradle-plugin")
 
 gradle.allprojects {
     group = "io.pixeloutlaw"
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
+
+include("sample-kotlin")

@@ -1,12 +1,12 @@
 plugins {
-    kotlin("jvm") version "1.4.21" apply false
+    kotlin("jvm") version "1.5.10" apply false
     id("io.pixeloutlaw.gradle")
-    id("io.pixeloutlaw.spigot.build")
+//    id("io.pixeloutlaw.spigot.build")
 }
 
-spigotBuildTools {
-    versions = listOf("1.16.4")
-}
+//spigotBuildTools {
+//    versions = listOf("1.16.4")
+//}
 
 tasks.withType<Wrapper>().configureEach {
     version = "7.0.2"

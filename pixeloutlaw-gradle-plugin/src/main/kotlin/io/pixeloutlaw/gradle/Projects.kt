@@ -1,6 +1,3 @@
-// We're using Gradle 6.8 features here
-@file:Suppress("UnstableApiUsage")
-
 package io.pixeloutlaw.gradle
 
 import com.adarshr.gradle.testlogger.TestLoggerExtension
@@ -32,6 +29,7 @@ import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
 import org.gradle.plugins.signing.SigningPlugin
 import org.gradle.testing.jacoco.plugins.JacocoPlugin
+import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -49,10 +47,10 @@ internal fun Project.publishToMavenCentral() {
     pluginManager.apply(SigningPlugin::class.java)
 
     configure<NexusPublishExtension> {
-        repositories {
-            sonatype {
-                username.set(System.getenv("OSSRH_USERNAME"))
-                password.set(System.getenv("OSSRH_PASSWORD"))
+        repositories { repositories ->
+            repositories.sonatype { repo ->
+                repo.username.set(System.getenv("OSSRH_USERNAME"))
+                repo.password.set(System.getenv("OSSRH_PASSWORD"))
             }
         }
     }
@@ -80,8 +78,8 @@ internal fun Project.configurePublicationsForMavenCentral() {
 
             // POM contents for Maven Central
             pom {
-                mitLicense()
-                addCompileOnlyDependenciesAsProvided(this@configurePublicationsForMavenCentral)
+                pom.mitLicense()
+                pom.addCompileOnlyDependenciesAsProvided(this@configurePublicationsForMavenCentral)
             }
         }
     }
@@ -96,22 +94,20 @@ internal fun Project.applyKotlinConfiguration() {
 
     configure<SpotlessExtension> {
         kotlin {
-            target("src/**/*.kt")
-            ktlint("0.41.0")
-            trimTrailingWhitespace()
-            endWithNewline()
+            it.target("src/**/*.kt")
+            it.ktlint("0.41.0")
+            it.trimTrailingWhitespace()
+            it.endWithNewline()
             if (file("HEADER").exists()) {
-                licenseHeaderFile("HEADER")
+                it.licenseHeaderFile("HEADER")
             }
         }
     }
 
     tasks.withType<KotlinCompile> {
-        dependsOn("spotlessKotlinApply")
         kotlinOptions {
             javaParameters = true
             jvmTarget = supportedJavaVersion.toString()
-            useIR = true
         }
     }
 
@@ -127,12 +123,17 @@ internal fun Project.applyKotlinConfiguration() {
 internal fun Project.applyJavaConfiguration() {
     pluginManager.apply(JacocoPlugin::class.java)
     pluginManager.apply(SpotlessPlugin::class.java)
+
+    configure<JacocoPluginExtension> {
+        this.toolVersion = "0.8.7"
+    }
+
     configure<SpotlessExtension> {
         java {
-            target("src/**/*.java")
-            googleJavaFormat()
-            trimTrailingWhitespace()
-            endWithNewline()
+            it.target("src/**/*.java")
+            it.googleJavaFormat()
+            it.trimTrailingWhitespace()
+            it.endWithNewline()
         }
     }
 
@@ -142,7 +143,6 @@ internal fun Project.applyJavaConfiguration() {
     }
 
     tasks.withType<JavaCompile> {
-        dependsOn("spotlessJavaApply")
         options.compilerArgs.add("-parameters")
         options.isFork = true
         options.forkOptions.executable = "javac"
@@ -150,7 +150,7 @@ internal fun Project.applyJavaConfiguration() {
 
     tasks.withType<JacocoReport> {
         reports {
-            xml.isEnabled = true
+            it.xml.isEnabled = true
         }
     }
 
