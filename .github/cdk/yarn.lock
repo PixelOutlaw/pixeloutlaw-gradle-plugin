@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@mythicdrops/github-cdkactions@^5.3.0":
+"@mythicdrops/github-cdkactions@5.3.1":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@mythicdrops/github-cdkactions/-/github-cdkactions-5.3.1.tgz#51adf56d0dc2422421088dc24744d38d05360c17"
   integrity sha512-eeADtjHVCBbp8IXf9JRpz07sByJlRGTBgfvQhbBnQzA3FOeustyMn8qaT71lpTgJju/8HBsMB2njCMayAPpnMA==
