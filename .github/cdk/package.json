@@ -12,7 +12,7 @@
     "build": "yarn compile && yarn synth"
   },
   "dependencies": {
-    "@mythicdrops/github-cdkactions": "^5.3.0"
+    "@mythicdrops/github-cdkactions": "5.3.1"
   },
   "devDependencies": {
     "@types/node": "15.6.0",
