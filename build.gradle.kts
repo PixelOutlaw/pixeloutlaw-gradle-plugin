@@ -1,15 +1,10 @@
 plugins {
-    kotlin("jvm") version "1.5.10" apply false
+    kotlin("jvm") version "1.5.21" apply false
     id("io.pixeloutlaw.gradle")
-//    id("io.pixeloutlaw.spigot.build")
 }
 
-//spigotBuildTools {
-//    versions = listOf("1.16.4")
-//}
-
 tasks.withType<Wrapper>().configureEach {
-    version = "7.0.2"
+    version = "7.1.1"
     doLast {
         copy {
             from(propertiesFile)
