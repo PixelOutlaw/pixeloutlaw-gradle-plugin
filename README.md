@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-This plugin only works with versions of Gradle >= 7.0.2.
+This plugin only works with versions of Gradle >= 7.1.1.
 
 ## Gradle Projects
 

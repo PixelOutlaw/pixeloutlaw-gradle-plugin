@@ -5,10 +5,8 @@ import com.adarshr.gradle.testlogger.TestLoggerPlugin
 import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
-import de.marcphilipp.gradle.nexus.NexusPublishExtension
-import de.marcphilipp.gradle.nexus.NexusPublishPlugin
-import io.codearte.gradle.nexus.NexusStagingExtension
-import io.codearte.gradle.nexus.NexusStagingPlugin
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
+import io.github.gradlenexus.publishplugin.NexusPublishPlugin
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import nebula.plugin.contacts.ContactsExtension
 import nebula.plugin.contacts.ContactsPlugin
@@ -23,7 +21,6 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByName
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
@@ -32,6 +29,7 @@ import org.gradle.testing.jacoco.plugins.JacocoPlugin
 import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.jetbrains.dokka.gradle.DokkaPlugin
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
@@ -43,17 +41,7 @@ internal val supportedJavaVersion = JavaVersion.VERSION_1_8
  * Configures the project to publish to Maven Central.
  */
 internal fun Project.publishToMavenCentral() {
-    pluginManager.apply(NexusPublishPlugin::class.java)
     pluginManager.apply(SigningPlugin::class.java)
-
-    configure<NexusPublishExtension> {
-        repositories { repositories ->
-            repositories.sonatype { repo ->
-                repo.username.set(System.getenv("OSSRH_USERNAME"))
-                repo.password.set(System.getenv("OSSRH_PASSWORD"))
-            }
-        }
-    }
 
     // Signing will only occur if trying to publish the JAR.
     configure<SigningExtension> {
@@ -64,6 +52,7 @@ internal fun Project.publishToMavenCentral() {
         val signingPassword: String? by project
         // Uses ASCII-armored keys (typically provided on GitHub Actions)
         useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(extensions.getByName<PublishingExtension>("publishing").publications.matching { it is MavenPublication })
     }
 }
 
@@ -73,9 +62,6 @@ internal fun Project.publishToMavenCentral() {
 internal fun Project.configurePublicationsForMavenCentral() {
     configure<PublishingExtension> {
         publications.withType<MavenPublication> {
-            // Signing the binaries
-            extensions.getByType<SigningExtension>().sign(this)
-
             // POM contents for Maven Central
             pom {
                 pom.mitLicense()
@@ -95,7 +81,7 @@ internal fun Project.applyKotlinConfiguration() {
     configure<SpotlessExtension> {
         kotlin {
             it.target("src/**/*.kt")
-            it.ktlint("0.41.0")
+            it.ktlint("0.42.0")
             it.trimTrailingWhitespace()
             it.endWithNewline()
             if (file("HEADER").exists()) {
@@ -111,9 +97,10 @@ internal fun Project.applyKotlinConfiguration() {
         }
     }
 
+    val dokkaJavadoc = tasks.getByName<DokkaTask>("dokkaJavadoc")
     tasks.getByName("javadocJar", Jar::class) {
-        dependsOn("dokkaJavadoc")
-        from(buildDir.resolve("dokka/javadoc"))
+        dependsOn(dokkaJavadoc)
+        from(dokkaJavadoc)
     }
 }
 
@@ -195,11 +182,13 @@ internal fun Project.applyRootConfiguration() {
         version = rootProject.version
     }
 
-    // Nexus Staging Plugin can only go on the root project
-    pluginManager.apply(NexusStagingPlugin::class.java)
-    configure<NexusStagingExtension> {
-        packageGroup = "io.pixeloutlaw"
-        username = System.getenv("OSSRH_USERNAME")
-        password = System.getenv("OSSRH_PASSWORD")
+    pluginManager.apply(NexusPublishPlugin::class.java)
+    configure<NexusPublishExtension> {
+        repositories {
+            it.sonatype { sonatype ->
+                sonatype.username.set(System.getenv("OSSRH_USERNAME") ?: "N/A")
+                sonatype.password.set(System.getenv("OSSRH_PASSWORD") ?: "N/A")
+            }
+        }
     }
 }
