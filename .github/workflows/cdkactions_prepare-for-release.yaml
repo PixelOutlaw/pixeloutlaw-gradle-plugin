@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: adopt
-          java-version: "8"
+          java-version: "25"
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
       - name: Set Gradle Version
